@@ -145,7 +145,7 @@ defmodule Koikoi.FakeSeeder do
       gender = if :rand.uniform() < 0.5, do: "female", else: "male"
       age = random_age()
       dob = Date.add(Date.utc_today(), -age * 365 - :rand.uniform(364))
-      oid = BSON.ObjectId.new()
+      oid = Mongo.object_id()
       now = DateTime.utc_now()
 
       subscription = pick_subscription(gender)
@@ -204,6 +204,8 @@ defmodule Koikoi.FakeSeeder do
       # Strip internal metadata before storing in DB
       db_photo_entry = Map.delete(photo_entry, "_seed_source")
 
+      {location_geo, location_name} = build_location(pref, city, lng, lat, richness)
+
       now = DateTime.utc_now()
 
       profile = %{
@@ -213,7 +215,8 @@ defmodule Koikoi.FakeSeeder do
         bio: bio,
         gender: gender,
         age: age,
-        location: build_location(pref, city, lng, lat, richness),
+        location: location_geo,
+        location_name: location_name,
         hometown: if(richness == :rich, do: Enum.random(["東京都", "大阪府", "神奈川県", "愛知県", "北海道", "福岡県", pref]), else: nil),
         physical: build_physical(richness),
         career: build_career(occupation, richness),
@@ -638,20 +641,18 @@ defmodule Koikoi.FakeSeeder do
   end
 
   defp build_location(pref, city, lng, lat, richness) do
-    base = %{prefecture: pref, city: city}
-
     case richness do
       :rich ->
-        # Add slight coordinate jitter
         jitter_lng = lng + (:rand.uniform() - 0.5) * 0.1
         jitter_lat = lat + (:rand.uniform() - 0.5) * 0.1
-        Map.merge(base, %{
-          coordinates: %{type: "Point", coordinates: [jitter_lng, jitter_lat]}
-        })
+        geo = %{type: "Point", coordinates: [jitter_lng, jitter_lat]}
+        {geo, "#{pref}#{city}"}
+
       :medium ->
-        base
+        {nil, "#{pref}#{city}"}
+
       :sparse ->
-        %{prefecture: pref}
+        {nil, pref}
     end
   end
 
@@ -739,7 +740,14 @@ defmodule Koikoi.FakeSeeder do
     today = Date.utc_today()
     age = today.year - dob.year
 
-    if Date.compare(Date.new!(today.year, dob.month, dob.day), today) == :gt do
+    # Handle leap year birthdays (Feb 29 -> use Mar 1 in non-leap years)
+    birthday_this_year =
+      case Date.new(today.year, dob.month, dob.day) do
+        {:ok, date} -> date
+        {:error, _} -> Date.new!(today.year, 3, 1)
+      end
+
+    if Date.compare(birthday_this_year, today) == :gt do
       age - 1
     else
       age
@@ -800,9 +808,15 @@ defmodule Koikoi.FakeSeeder do
   end
 
   defp has_location?(profile) do
-    loc = Map.get(profile, :location) || Map.get(profile, "location") || %{}
-    pref = Map.get(loc, :prefecture) || Map.get(loc, "prefecture")
-    is_binary(pref) and String.trim(pref) != ""
+    loc_name = Map.get(profile, :location_name) || Map.get(profile, "location_name")
+
+    if is_binary(loc_name) and String.trim(loc_name) != "" do
+      true
+    else
+      loc = Map.get(profile, :location) || Map.get(profile, "location") || %{}
+      pref = Map.get(loc, :prefecture) || Map.get(loc, "prefecture")
+      is_binary(pref) and String.trim(pref) != ""
+    end
   end
 
   defp has_photo?(profile) do

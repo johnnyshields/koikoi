@@ -36,6 +36,8 @@ koikoi/
 │   │   ├── channels/                # WebSocket (chat, notifications)
 │   │   ├── plugs/                   # Auth pipeline, locale, Stripe webhook
 │   │   └── router.ex                # All routes under /api/v1/
+│   ├── scripts/                     # One-off scripts (fake seeder, etc.)
+│   ├── seeds/users/                 # Downloaded portrait photos (gitignored)
 │   ├── config/                      # Environment configs
 │   └── test/
 ├── frontend/                        # React SPA
@@ -91,6 +93,31 @@ mix run -e "Koikoi.Seeds.run()"
 ```
 
 Test user credentials: phone `+81901111001` through `+81901111005` (female), `+81902222001` through `+81902222005` (male), password `password123`.
+
+**Fake profiles** (2000 users + social graph, requires seeds above):
+```bash
+cd backend
+mix run scripts/seed_fake_profiles.exs
+```
+
+Creates 2000 fake users (`+81903000001`–`+81903002000`, password `password123`) with:
+- Profiles with varied completeness (30% rich / 40% medium / 30% sparse)
+- Profile photos from `seeds/users/` (100 male + 100 female portraits, cycled)
+- Social graph centered on さくら (+81901111001): 30 friends, 15 matchmakers, ~200 FoF connections
+- Background connections among remaining users (~300 friend + ~50 matchmaker)
+
+Photos must be downloaded first (one-time):
+```bash
+cd backend
+mkdir -p seeds/users/female seeds/users/male
+for i in $(seq 0 99); do
+  idx=$(printf '%03d' $i)
+  curl -s -o "seeds/users/female/${idx}.jpg" "https://randomuser.me/api/portraits/women/${i}.jpg"
+  curl -s -o "seeds/users/male/${idx}.jpg" "https://randomuser.me/api/portraits/men/${i}.jpg"
+done
+```
+
+The script is idempotent — re-running deletes previous fake data without touching the 10 original seed users.
 
 ### Testing
 ```bash
