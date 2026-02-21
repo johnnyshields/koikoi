@@ -56,7 +56,10 @@ defmodule Koikoi.Repo do
   end
 
   def count_documents(collection, filter, opts \\ []) do
-    Mongo.count_documents(:mongo, collection, filter, opts)
+    case Mongo.count_documents(:mongo, collection, filter, opts) do
+      {:ok, count} -> count
+      count when is_integer(count) -> count
+    end
   end
 
   def aggregate(collection, pipeline, opts \\ []) do

@@ -83,11 +83,21 @@ defmodule Koikoi.Profiles do
   end
 
   def get_profile(user_id) do
-    oid = to_object_id(user_id)
+    user_id_str = to_string(user_id)
 
-    case Repo.find_one(@profiles_collection, %{user_id: oid}) do
-      nil -> {:error, :not_found}
-      profile -> {:ok, profile}
+    # Try string lookup first (seed/fake profiles store user_id as string),
+    # then fall back to ObjectId lookup
+    case Repo.find_one(@profiles_collection, %{user_id: user_id_str}) do
+      nil ->
+        oid = to_object_id(user_id)
+
+        case Repo.find_one(@profiles_collection, %{user_id: oid}) do
+          nil -> {:error, :not_found}
+          profile -> {:ok, profile}
+        end
+
+      profile ->
+        {:ok, profile}
     end
   end
 
