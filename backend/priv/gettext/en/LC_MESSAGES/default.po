@@ -1,0 +1,43 @@
+## English translations for Koikoi
+msgid ""
+msgstr ""
+"Language: en\n"
+
+msgid "phone_number_required"
+msgstr "Phone number is required"
+
+msgid "password_required"
+msgstr "Password is required"
+
+msgid "password_too_short"
+msgstr "Password must be at least 8 characters"
+
+msgid "gender_required"
+msgstr "Gender is required"
+
+msgid "invalid_gender"
+msgstr "Invalid gender"
+
+msgid "date_of_birth_required"
+msgstr "Date of birth is required"
+
+msgid "phone_number_taken"
+msgstr "This phone number is already registered"
+
+msgid "invalid_credentials"
+msgstr "Invalid phone number or password"
+
+msgid "verification_code_sent"
+msgstr "Verification code sent"
+
+msgid "invalid_verification_code"
+msgstr "Invalid verification code"
+
+msgid "verification_code_expired"
+msgstr "Verification code has expired"
+
+msgid "logged_out"
+msgstr "Logged out successfully"
+
+msgid "unauthorized"
+msgstr "Authentication required"

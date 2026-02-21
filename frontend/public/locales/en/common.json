@@ -1,0 +1,39 @@
+{
+  "appName": "Koikoi",
+  "nav": {
+    "home": "Home",
+    "profile": "Profile",
+    "matching": "Matching",
+    "messages": "Messages",
+    "settings": "Settings"
+  },
+  "actions": {
+    "submit": "Submit",
+    "cancel": "Cancel",
+    "save": "Save",
+    "delete": "Delete",
+    "back": "Back",
+    "next": "Next",
+    "close": "Close",
+    "confirm": "Confirm",
+    "edit": "Edit",
+    "search": "Search"
+  },
+  "status": {
+    "loading": "Loading...",
+    "saving": "Saving...",
+    "sending": "Sending..."
+  },
+  "errors": {
+    "generic": "An error occurred",
+    "validation": "Please check your input",
+    "network": "Network error. Please check your connection",
+    "notFound": "Page not found",
+    "unauthorized": "Login required",
+    "forbidden": "Access denied"
+  },
+  "welcome": {
+    "title": "Welcome to Koikoi",
+    "subtitle": "Find your ideal partner"
+  }
+}

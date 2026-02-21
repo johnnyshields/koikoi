@@ -1,0 +1,154 @@
+{
+  "myProfile": "My Profile",
+  "editProfile": "Edit Profile",
+  "viewProfile": "Profile Details",
+  "completeness": "Profile Completeness",
+  "completenessTip": "Complete your profile to increase your match rate",
+
+  "steps": {
+    "basic": "Basic Info",
+    "about": "About Me",
+    "career": "Career",
+    "relationship": "Relationship",
+    "photos": "Photos",
+    "tags": "Tags",
+    "preferences": "Preferences"
+  },
+  "skip": "Skip",
+  "previous": "Previous",
+  "finish": "Finish",
+  "saving": "Saving...",
+
+  "fields": {
+    "nickname": "Nickname",
+    "nicknamePlaceholder": "Enter display name",
+    "prefecture": "Prefecture",
+    "prefecturePlaceholder": "Select prefecture",
+    "city": "City",
+    "cityPlaceholder": "Enter city",
+    "hometown": "Hometown",
+    "hometownPlaceholder": "Enter hometown",
+    "bio": "Bio",
+    "bioPlaceholder": "Tell us about yourself (max 500 characters)",
+    "bioCount": "{{count}}/500",
+    "personality": "Personality",
+    "personalityPlaceholder": "Describe your personality",
+    "heightCm": "Height",
+    "heightPlaceholder": "Select height",
+    "bodyType": "Body Type",
+    "bodyTypePlaceholder": "Select body type",
+    "bloodType": "Blood Type",
+    "bloodTypePlaceholder": "Select blood type",
+    "occupation": "Occupation",
+    "occupationPlaceholder": "Enter occupation",
+    "education": "Education",
+    "educationPlaceholder": "Select education",
+    "incomeRange": "Income",
+    "incomeRangePlaceholder": "Select income range",
+    "drinking": "Drinking",
+    "drinkingPlaceholder": "Select drinking habit",
+    "smoking": "Smoking",
+    "smokingPlaceholder": "Select smoking habit",
+    "marriageIntent": "Marriage Intent",
+    "marriageIntentPlaceholder": "Select option",
+    "hasChildren": "Has Children",
+    "wantsChildren": "Wants Children",
+    "wantsChildrenPlaceholder": "Select option",
+    "ageRange": "Age Range",
+    "ageMin": "Min",
+    "ageMax": "Max",
+    "preferredGenders": "Preferred Genders",
+    "preferredPrefectures": "Preferred Prefectures",
+    "selectAll": "All"
+  },
+
+  "options": {
+    "bodyType": {
+      "slim": "Slim",
+      "normal": "Normal",
+      "muscular": "Muscular",
+      "chubby": "Chubby",
+      "large": "Large"
+    },
+    "bloodType": {
+      "A": "Type A",
+      "B": "Type B",
+      "O": "Type O",
+      "AB": "Type AB"
+    },
+    "education": {
+      "high_school": "High School",
+      "vocational": "Vocational School",
+      "university": "University",
+      "graduate": "Graduate School"
+    },
+    "incomeRange": {
+      "under_300": "Under 3M",
+      "300_500": "3M - 5M",
+      "500_700": "5M - 7M",
+      "700_1000": "7M - 10M",
+      "over_1000": "Over 10M"
+    },
+    "drinking": {
+      "never": "Never",
+      "sometimes": "Sometimes",
+      "often": "Often"
+    },
+    "smoking": {
+      "never": "Never",
+      "sometimes": "Sometimes",
+      "often": "Often"
+    },
+    "marriageIntent": {
+      "want": "Want to marry",
+      "if_right": "If the right person",
+      "not_now": "Not thinking about it"
+    },
+    "wantsChildren": {
+      "want": "Want children",
+      "if_right": "If the right person",
+      "not_want": "Don't want children"
+    },
+    "gender": {
+      "male": "Male",
+      "female": "Female",
+      "other": "Other"
+    }
+  },
+
+  "photos": {
+    "title": "Photos",
+    "upload": "Upload Photo",
+    "dragDrop": "Drag & drop or click to upload",
+    "maxPhotos": "Maximum {{max}} photos",
+    "primary": "Primary Photo",
+    "setPrimary": "Set as primary",
+    "deletePhoto": "Delete photo",
+    "uploading": "Uploading...",
+    "photoCount": "{{count}}/{{max}} photos"
+  },
+
+  "tags": {
+    "title": "Tags",
+    "search": "Search tags",
+    "selected": "Selected Tags",
+    "addCustom": "Add Custom Tag",
+    "addCustomPlaceholder": "Enter tag name",
+    "categories": {
+      "hobby": "Hobbies",
+      "lifestyle": "Lifestyle",
+      "values": "Values",
+      "personality": "Personality",
+      "food": "Food",
+      "music": "Music",
+      "sports": "Sports",
+      "travel": "Travel"
+    },
+    "noResults": "No matching tags found"
+  },
+
+  "noProfile": "You haven't created a profile yet",
+  "createProfile": "Create Profile",
+  "memberSince": "Member since: {{date}}",
+  "lastUpdated": "Last updated: {{date}}"
+}

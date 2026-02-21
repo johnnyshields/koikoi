@@ -1,0 +1,44 @@
+## Japanese translations for Koikoi
+msgid ""
+msgstr ""
+"Language: ja\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+
+msgid "phone_number_required"
+msgstr "電話番号は必須です"
+
+msgid "password_required"
+msgstr "パスワードは必須です"
+
+msgid "password_too_short"
+msgstr "パスワードは8文字以上にしてください"
+
+msgid "gender_required"
+msgstr "性別は必須です"
+
+msgid "invalid_gender"
+msgstr "無効な性別です"
+
+msgid "date_of_birth_required"
+msgstr "生年月日は必須です"
+
+msgid "phone_number_taken"
+msgstr "この電話番号は既に登録されています"
+
+msgid "invalid_credentials"
+msgstr "電話番号またはパスワードが正しくありません"
+
+msgid "verification_code_sent"
+msgstr "認証コードを送信しました"
+
+msgid "invalid_verification_code"
+msgstr "認証コードが無効です"
+
+msgid "verification_code_expired"
+msgstr "認証コードの有効期限が切れています"
+
+msgid "logged_out"
+msgstr "ログアウトしました"
+
+msgid "unauthorized"
+msgstr "認証が必要です"

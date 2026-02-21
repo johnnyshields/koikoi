@@ -1,0 +1,58 @@
+{
+  "friends": {
+    "title": "友達",
+    "noFriends": "友達はまだいません",
+    "removeFriend": "友達を解除",
+    "removeConfirm": "この友達を解除しますか？",
+    "search": "友達を検索",
+    "count": "{{count}}人の友達"
+  },
+  "pending": {
+    "title": "友達リクエスト",
+    "noPending": "保留中のリクエストはありません",
+    "accept": "承認",
+    "decline": "辞退",
+    "received": "受信したリクエスト"
+  },
+  "trustTier": {
+    "title": "信頼レベル",
+    "inner_circle": "親友",
+    "friends": "友達",
+    "verified": "認証済み",
+    "open": "オープン",
+    "change": "信頼レベルを変更"
+  },
+  "matchmakers": {
+    "title": "マッチメーカー",
+    "myMatchmakers": "私のマッチメーカー",
+    "mySubjects": "マッチメイク中",
+    "noMatchmakers": "マッチメーカーはまだいません",
+    "noSubjects": "マッチメイク対象はいません",
+    "invite": "マッチメーカーを招待",
+    "remove": "マッチメーカーを解除",
+    "accept": "承認する",
+    "decline": "辞退する",
+    "status": "マッチメイク状況",
+    "active": "マッチメイク有効",
+    "inactive": "マッチメイク無効",
+    "required": "必要なマッチメーカー数: {{count}}人",
+    "current": "現在のマッチメーカー数: {{count}}人"
+  },
+  "invite": {
+    "title": "招待",
+    "yourCode": "あなたの招待コード",
+    "copied": "コピーしました！",
+    "copy": "コードをコピー",
+    "share": "招待リンクを共有",
+    "redeem": "招待コードを入力",
+    "redeemPlaceholder": "招待コードを入力",
+    "redeemButton": "招待コードを使用",
+    "stats": "招待状況",
+    "sent": "送信済み: {{count}}件"
+  },
+  "nav": {
+    "friends": "友達",
+    "matchmakers": "マッチメーカー",
+    "invite": "招待"
+  }
+}

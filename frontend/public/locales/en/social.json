@@ -1,0 +1,58 @@
+{
+  "friends": {
+    "title": "Friends",
+    "noFriends": "No friends yet",
+    "removeFriend": "Remove Friend",
+    "removeConfirm": "Are you sure you want to remove this friend?",
+    "search": "Search friends",
+    "count": "{{count}} friends"
+  },
+  "pending": {
+    "title": "Friend Requests",
+    "noPending": "No pending requests",
+    "accept": "Accept",
+    "decline": "Decline",
+    "received": "Received Requests"
+  },
+  "trustTier": {
+    "title": "Trust Tier",
+    "inner_circle": "Inner Circle",
+    "friends": "Friends",
+    "verified": "Verified",
+    "open": "Open",
+    "change": "Change Trust Tier"
+  },
+  "matchmakers": {
+    "title": "Matchmakers",
+    "myMatchmakers": "My Matchmakers",
+    "mySubjects": "People I'm Matchmaking",
+    "noMatchmakers": "No matchmakers yet",
+    "noSubjects": "No matchmaking subjects yet",
+    "invite": "Invite Matchmaker",
+    "remove": "Remove Matchmaker",
+    "accept": "Accept",
+    "decline": "Decline",
+    "status": "Matchmaking Status",
+    "active": "Matchmaking Active",
+    "inactive": "Matchmaking Inactive",
+    "required": "Matchmakers required: {{count}}",
+    "current": "Current matchmakers: {{count}}"
+  },
+  "invite": {
+    "title": "Invite",
+    "yourCode": "Your Invite Code",
+    "copied": "Copied!",
+    "copy": "Copy Code",
+    "share": "Share Invite Link",
+    "redeem": "Redeem Invite Code",
+    "redeemPlaceholder": "Enter invite code",
+    "redeemButton": "Redeem Code",
+    "stats": "Invite Stats",
+    "sent": "Sent: {{count}}"
+  },
+  "nav": {
+    "friends": "Friends",
+    "matchmakers": "Matchmakers",
+    "invite": "Invite"
+  }
+}

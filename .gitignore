@@ -1,10 +1,33 @@
-/_build
+# Dependencies
+node_modules/
+deps/
+
+# Build
+dist/
+_build/
+*.beam
+*.ez
 /cover
-/deps
 /doc
 /.fetch
 erl_crash.dump
-*.ez
-*.beam
 /config/*.secret.exs
+
+# IDE
 .elixir_ls/
+.vscode/
+
+# Environment
+.env
+.env.local
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Uploads (dev)
+backend/priv/static/uploads/
+
+# Logs
+*.log
+npm-debug.log*

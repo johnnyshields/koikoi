@@ -1,0 +1,154 @@
+{
+  "myProfile": "マイプロフィール",
+  "editProfile": "プロフィール編集",
+  "viewProfile": "プロフィール詳細",
+  "completeness": "プロフィール完成度",
+  "completenessTip": "プロフィールを充実させてマッチング率を上げましょう",
+
+  "steps": {
+    "basic": "基本情報",
+    "about": "自己紹介",
+    "career": "仕事・学歴",
+    "relationship": "恋愛・結婚",
+    "photos": "写真",
+    "tags": "タグ",
+    "preferences": "希望条件"
+  },
+  "skip": "スキップ",
+  "previous": "前へ",
+  "finish": "完了",
+  "saving": "保存中...",
+
+  "fields": {
+    "nickname": "ニックネーム",
+    "nicknamePlaceholder": "表示名を入力",
+    "prefecture": "居住地（都道府県）",
+    "prefecturePlaceholder": "都道府県を選択",
+    "city": "市区町村",
+    "cityPlaceholder": "市区町村を入力",
+    "hometown": "出身地",
+    "hometownPlaceholder": "出身地を入力",
+    "bio": "自己紹介文",
+    "bioPlaceholder": "あなたのことを教えてください（500文字以内）",
+    "bioCount": "{{count}}/500",
+    "personality": "性格・人柄",
+    "personalityPlaceholder": "あなたの性格を教えてください",
+    "heightCm": "身長",
+    "heightPlaceholder": "身長を選択",
+    "bodyType": "体型",
+    "bodyTypePlaceholder": "体型を選択",
+    "bloodType": "血液型",
+    "bloodTypePlaceholder": "血液型を選択",
+    "occupation": "職業",
+    "occupationPlaceholder": "職業を入力",
+    "education": "学歴",
+    "educationPlaceholder": "学歴を選択",
+    "incomeRange": "年収",
+    "incomeRangePlaceholder": "年収を選択",
+    "drinking": "飲酒",
+    "drinkingPlaceholder": "飲酒について選択",
+    "smoking": "喫煙",
+    "smokingPlaceholder": "喫煙について選択",
+    "marriageIntent": "結婚への意思",
+    "marriageIntentPlaceholder": "選択してください",
+    "hasChildren": "お子さまの有無",
+    "wantsChildren": "お子さまの希望",
+    "wantsChildrenPlaceholder": "選択してください",
+    "ageRange": "希望年齢",
+    "ageMin": "下限",
+    "ageMax": "上限",
+    "preferredGenders": "希望の性別",
+    "preferredPrefectures": "希望の地域",
+    "selectAll": "すべて"
+  },
+
+  "options": {
+    "bodyType": {
+      "slim": "スリム",
+      "normal": "普通",
+      "muscular": "筋肉質",
+      "chubby": "ぽっちゃり",
+      "large": "太め"
+    },
+    "bloodType": {
+      "A": "A型",
+      "B": "B型",
+      "O": "O型",
+      "AB": "AB型"
+    },
+    "education": {
+      "high_school": "高校卒",
+      "vocational": "専門学校卒",
+      "university": "大学卒",
+      "graduate": "大学院卒"
+    },
+    "incomeRange": {
+      "under_300": "〜300万",
+      "300_500": "300〜500万",
+      "500_700": "500〜700万",
+      "700_1000": "700〜1000万",
+      "over_1000": "1000万〜"
+    },
+    "drinking": {
+      "never": "飲まない",
+      "sometimes": "たまに飲む",
+      "often": "飲む"
+    },
+    "smoking": {
+      "never": "吸わない",
+      "sometimes": "たまに吸う",
+      "often": "吸う"
+    },
+    "marriageIntent": {
+      "want": "結婚したい",
+      "if_right": "いい人がいれば",
+      "not_now": "今は考えていない"
+    },
+    "wantsChildren": {
+      "want": "欲しい",
+      "if_right": "いい人がいれば",
+      "not_want": "欲しくない"
+    },
+    "gender": {
+      "male": "男性",
+      "female": "女性",
+      "other": "その他"
+    }
+  },
+
+  "photos": {
+    "title": "写真",
+    "upload": "写真をアップロード",
+    "dragDrop": "ドラッグ＆ドロップまたはクリック",
+    "maxPhotos": "最大{{max}}枚",
+    "primary": "メイン写真",
+    "setPrimary": "メインに設定",
+    "deletePhoto": "写真を削除",
+    "uploading": "アップロード中...",
+    "photoCount": "{{count}}/{{max}}枚"
+  },
+
+  "tags": {
+    "title": "タグ",
+    "search": "タグを検索",
+    "selected": "選択中のタグ",
+    "addCustom": "カスタムタグを追加",
+    "addCustomPlaceholder": "タグ名を入力",
+    "categories": {
+      "hobby": "趣味",
+      "lifestyle": "ライフスタイル",
+      "values": "価値観",
+      "personality": "性格",
+      "food": "食べ物",
+      "music": "音楽",
+      "sports": "スポーツ",
+      "travel": "旅行"
+    },
+    "noResults": "該当するタグがありません"
+  },
+
+  "noProfile": "プロフィールがまだ作成されていません",
+  "createProfile": "プロフィールを作成する",
+  "memberSince": "登録日: {{date}}",
+  "lastUpdated": "最終更新: {{date}}"
+}

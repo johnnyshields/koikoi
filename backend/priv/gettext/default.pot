@@ -1,0 +1,42 @@
+## Template for Koikoi translations
+msgid ""
+msgstr ""
+
+msgid "phone_number_required"
+msgstr ""
+
+msgid "password_required"
+msgstr ""
+
+msgid "password_too_short"
+msgstr ""
+
+msgid "gender_required"
+msgstr ""
+
+msgid "invalid_gender"
+msgstr ""
+
+msgid "date_of_birth_required"
+msgstr ""
+
+msgid "phone_number_taken"
+msgstr ""
+
+msgid "invalid_credentials"
+msgstr ""
+
+msgid "verification_code_sent"
+msgstr ""
+
+msgid "invalid_verification_code"
+msgstr ""
+
+msgid "verification_code_expired"
+msgstr ""
+
+msgid "logged_out"
+msgstr ""
+
+msgid "unauthorized"
+msgstr ""

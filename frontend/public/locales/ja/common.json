@@ -1,0 +1,39 @@
+{
+  "appName": "コイコイ",
+  "nav": {
+    "home": "ホーム",
+    "profile": "プロフィール",
+    "matching": "マッチング",
+    "messages": "メッセージ",
+    "settings": "設定"
+  },
+  "actions": {
+    "submit": "送信",
+    "cancel": "キャンセル",
+    "save": "保存",
+    "delete": "削除",
+    "back": "戻る",
+    "next": "次へ",
+    "close": "閉じる",
+    "confirm": "確認",
+    "edit": "編集",
+    "search": "検索"
+  },
+  "status": {
+    "loading": "読み込み中...",
+    "saving": "保存中...",
+    "sending": "送信中..."
+  },
+  "errors": {
+    "generic": "エラーが発生しました",
+    "validation": "入力内容を確認してください",
+    "network": "通信エラーが発生しました。接続を確認してください",
+    "notFound": "ページが見つかりません",
+    "unauthorized": "ログインが必要です",
+    "forbidden": "アクセス権限がありません"
+  },
+  "welcome": {
+    "title": "コイコイへようこそ",
+    "subtitle": "あなたの理想のパートナーを見つけましょう"
+  }
+}

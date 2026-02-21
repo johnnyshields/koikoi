@@ -1,0 +1,23 @@
+{
+  "conversations": "Messages",
+  "no_conversations": "No conversations yet",
+  "type_message": "Type a message...",
+  "send": "Send",
+  "typing": "Typing...",
+  "today": "Today",
+  "yesterday": "Yesterday",
+  "read": "Read",
+  "subscription_required": "Subscription required to send messages",
+  "view_plans": "View Plans",
+  "load_more": "Load more",
+  "notifications": "Notifications",
+  "mark_all_read": "Mark all as read",
+  "no_notifications": "No notifications",
+  "new_match": "New match!",
+  "match_accepted": "Match accepted",
+  "new_message": "New message",
+  "matchmaker_request": "Matchmaker request",
+  "matchmaker_success": "Match made!",
+  "match_expired": "Match expired",
+  "unread": "Unread"
+}

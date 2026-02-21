@@ -1,0 +1,23 @@
+{
+  "conversations": "メッセージ",
+  "no_conversations": "まだメッセージはありません",
+  "type_message": "メッセージを入力...",
+  "send": "送信",
+  "typing": "入力中...",
+  "today": "今日",
+  "yesterday": "昨日",
+  "read": "既読",
+  "subscription_required": "メッセージを送るには有料プランが必要です",
+  "view_plans": "プランを見る",
+  "load_more": "もっと読み込む",
+  "notifications": "通知",
+  "mark_all_read": "すべて既読にする",
+  "no_notifications": "通知はありません",
+  "new_match": "新しいマッチ！",
+  "match_accepted": "マッチが承認されました",
+  "new_message": "新しいメッセージ",
+  "matchmaker_request": "マッチメーカーリクエスト",
+  "matchmaker_success": "マッチ成立！",
+  "match_expired": "マッチの期限切れ",
+  "unread": "未読"
+}
