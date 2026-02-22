@@ -16,6 +16,7 @@ erl_crash.dump
 # IDE
 .elixir_ls/
 .vscode/
+.idea/
 
 # Environment
 .env
