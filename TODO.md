@@ -64,3 +64,9 @@ No existing app digitizes the shokai social graph. Every competitor is stranger-
 - Government spending 9.3B yen/yr on marriage support
 - Pairs dominates at $77M/yr revenue, 20M+ users
 - No major app combines social-graph trust with app convenience -- this is the gap
+
+---
+
+# Insta integration
+
+- Koikoi should be a layer on top of Insta profiles.
