@@ -14,6 +14,7 @@ defmodule Koikoi.Application do
       Koikoi.Repo,
       Koikoi.Matching.MatchExpirationWorker,
       Koikoi.AiMatchmaker.ColdStartWorker,
+      Koikoi.Shokai.ExpirationWorker,
       KoikoiWeb.Endpoint
     ]
 

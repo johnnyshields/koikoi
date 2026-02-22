@@ -3,23 +3,20 @@ import { AuthGuard } from './components/guards/AuthGuard';
 import { GuestGuard } from './components/guards/GuestGuard';
 import { AppLayout } from './components/layout/AppLayout';
 import { AuthLayout } from './components/layout/AuthLayout';
-import { HomePage } from './pages/HomePage';
 import { LoginPage } from './pages/auth/LoginPage';
 import { RegisterPage } from './pages/auth/RegisterPage';
 import { VerifyPhonePage } from './pages/auth/VerifyPhonePage';
 import { MyProfilePage } from './pages/profile/MyProfilePage';
 import { ProfileEditPage } from './pages/profile/ProfileEditPage';
 import { ProfileViewPage } from './pages/profile/ProfileViewPage';
-import { FriendsPage } from './pages/social/FriendsPage';
-import { MatchmakersPage } from './pages/social/MatchmakersPage';
 import { InvitePage } from './pages/social/InvitePage';
-import { CardDealingPage } from './pages/matching/CardDealingPage';
-import { MatchesPage } from './pages/matching/MatchesPage';
-import { MatchDetailPage } from './pages/matching/MatchDetailPage';
-import { MatchmakerDashboardPage } from './pages/matching/MatchmakerDashboardPage';
-import { ColdStartPage } from './pages/matching/ColdStartPage';
 import { ConversationsPage } from './pages/chat/ConversationsPage';
 import { ChatPage } from './pages/chat/ChatPage';
+import { CreateGroupPage } from './pages/chat/CreateGroupPage';
+import { GroupSettingsPage } from './pages/chat/GroupSettingsPage';
+import { ContactsPage } from './pages/contacts/ContactsPage';
+import { ShokaiCreatePage } from './pages/shokai/ShokaiCreatePage';
+import { ShokaiDetailPage } from './pages/shokai/ShokaiDetailPage';
 import { NotificationsPage } from './pages/notifications/NotificationsPage';
 import { SubscriptionPage } from './pages/billing/SubscriptionPage';
 import { CreditsPage } from './pages/billing/CreditsPage';
@@ -34,20 +31,17 @@ export const router = createBrowserRouter([
       </AuthGuard>
     ),
     children: [
-      { index: true, element: <HomePage /> },
+      { index: true, element: <ConversationsPage /> },
+      { path: 'contacts', element: <ContactsPage /> },
       { path: 'profile', element: <MyProfilePage /> },
       { path: 'profile/edit', element: <ProfileEditPage /> },
       { path: 'profile/:userId', element: <ProfileViewPage /> },
-      { path: 'friends', element: <FriendsPage /> },
-      { path: 'matchmakers', element: <MatchmakersPage /> },
       { path: 'invite', element: <InvitePage /> },
-      { path: 'matching', element: <CardDealingPage /> },
-      { path: 'matches', element: <MatchesPage /> },
-      { path: 'matches/:matchId', element: <MatchDetailPage /> },
-      { path: 'matchmaker-dashboard', element: <MatchmakerDashboardPage /> },
-      { path: 'cold-start', element: <ColdStartPage /> },
-      { path: 'conversations', element: <ConversationsPage /> },
+      { path: 'conversations/new-group', element: <CreateGroupPage /> },
+      { path: 'conversations/:conversationId/settings', element: <GroupSettingsPage /> },
       { path: 'conversations/:conversationId', element: <ChatPage /> },
+      { path: 'shokai/create', element: <ShokaiCreatePage /> },
+      { path: 'shokai/:shokaiId', element: <ShokaiDetailPage /> },
       { path: 'notifications', element: <NotificationsPage /> },
       { path: 'subscription', element: <SubscriptionPage /> },
       { path: 'credits', element: <CreditsPage /> },

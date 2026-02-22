@@ -162,6 +162,15 @@ defmodule Koikoi.Social do
     end
   end
 
+  def are_friends?(user_a_id, user_b_id) do
+    with {:ok, user_a_oid} <- decode_id(user_a_id),
+         {:ok, user_b_oid} <- decode_id(user_b_id) do
+      find_accepted_friend(user_a_oid, user_b_oid) != nil
+    else
+      _ -> false
+    end
+  end
+
   # --- Matchmaker Management ---
 
   def invite_matchmaker(user_id, matchmaker_user_id) do

@@ -63,11 +63,16 @@ defmodule KoikoiWeb.ChatChannel do
     %{
       id: to_string(msg["_id"]),
       conversation_id: to_string(msg["conversation_id"]),
-      sender_id: to_string(msg["sender_id"]),
+      sender_id: maybe_to_string(msg["sender_id"]),
       content: msg["content"],
-      message_type: msg["message_type"],
+      message_type: msg["message_type"] || "text",
       read_at: msg["read_at"],
+      read_by: msg["read_by"],
+      shokai_card_id: maybe_to_string(msg["shokai_card_id"]),
       inserted_at: msg["inserted_at"]
     }
   end
+
+  defp maybe_to_string(nil), do: nil
+  defp maybe_to_string(val), do: to_string(val)
 end

@@ -11,7 +11,7 @@ i18n
     fallbackLng: 'ja',
     supportedLngs: ['ja', 'en'],
     defaultNS: 'common',
-    ns: ['common', 'auth', 'profile', 'matching', 'social', 'chat', 'billing'],
+    ns: ['common', 'auth', 'profile', 'matching', 'social', 'chat', 'billing', 'shokai'],
     backend: {
       loadPath: '/locales/{{lng}}/{{ns}}.json',
     },

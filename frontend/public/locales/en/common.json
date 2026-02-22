@@ -5,7 +5,9 @@
     "profile": "Profile",
     "matching": "Matching",
     "messages": "Messages",
-    "settings": "Settings"
+    "settings": "Settings",
+    "chats": "Chats",
+    "contacts": "Contacts"
   },
   "actions": {
     "submit": "Submit",

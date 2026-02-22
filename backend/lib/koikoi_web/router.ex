@@ -90,11 +90,28 @@ defmodule KoikoiWeb.Router do
 
     # Chat - fixed paths before parameterized routes
     get "/chat/unread-count", ChatController, :unread_count
+    post "/conversations/dm", ChatController, :create_dm
+    post "/conversations/group", ChatController, :create_group
+    post "/conversations/goukon", ChatController, :create_goukon
     get "/conversations", ChatController, :list_conversations
+    # Parameterized conversation routes
     get "/conversations/:id", ChatController, :get_conversation
     get "/conversations/:id/messages", ChatController, :list_messages
+    get "/conversations/:id/members", ChatController, :list_members
     post "/conversations/:id/messages", ChatController, :send_message
+    post "/conversations/:id/members", ChatController, :add_members
+    post "/conversations/:id/leave", ChatController, :leave_group
     post "/conversations/:id/read", ChatController, :mark_read
+    put "/conversations/:id", ChatController, :update_group
+    delete "/conversations/:id/members/:user_id", ChatController, :remove_member
+
+    # Shokai - fixed paths before parameterized routes
+    get "/shokai/pending", ShokaiController, :pending
+    get "/shokai/sent", ShokaiController, :sent
+    get "/shokai/suggestions", ShokaiController, :suggestions
+    post "/shokai", ShokaiController, :create
+    get "/shokai/:id", ShokaiController, :show
+    post "/shokai/:id/respond", ShokaiController, :respond
 
     # Notifications - fixed paths before parameterized routes
     get "/notifications/unread-count", NotificationController, :unread_count

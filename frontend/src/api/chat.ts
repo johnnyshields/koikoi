@@ -1,5 +1,5 @@
 import apiClient from './client';
-import type { Conversation, ChatMessage } from '../types';
+import type { Conversation, ChatMessage, MemberInfo } from '../types';
 
 export const chatApi = {
   listConversations: (page = 1, limit = 20) =>
@@ -31,4 +31,45 @@ export const chatApi = {
 
   getUnreadCount: () =>
     apiClient.get<{ unread_count: number }>('/chat/unread-count'),
+
+  createDm: (friendId: string) =>
+    apiClient.post<{ conversation: Conversation }>('/conversations/dm', {
+      friend_id: friendId,
+    }),
+
+  createGroup: (name: string, memberIds: string[]) =>
+    apiClient.post<{ conversation: Conversation }>('/conversations/group', {
+      name,
+      member_ids: memberIds,
+    }),
+
+  createGoukon: (name: string, memberIds: string[], expiresInHours: number) =>
+    apiClient.post<{ conversation: Conversation }>('/conversations/goukon', {
+      name,
+      member_ids: memberIds,
+      expires_in_hours: expiresInHours,
+    }),
+
+  addMembers: (conversationId: string, memberIds: string[]) =>
+    apiClient.post<{ status: string; added: number }>(
+      `/conversations/${conversationId}/members`,
+      { member_ids: memberIds },
+    ),
+
+  removeMember: (conversationId: string, userId: string) =>
+    apiClient.delete(`/conversations/${conversationId}/members/${userId}`),
+
+  leaveGroup: (conversationId: string) =>
+    apiClient.post(`/conversations/${conversationId}/leave`),
+
+  updateGroup: (conversationId: string, attrs: { name?: string }) =>
+    apiClient.put<{ conversation: Conversation }>(
+      `/conversations/${conversationId}`,
+      attrs,
+    ),
+
+  listMembers: (conversationId: string) =>
+    apiClient.get<{ members: MemberInfo[] }>(
+      `/conversations/${conversationId}/members`,
+    ),
 };
