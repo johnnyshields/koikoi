@@ -1,8 +1,5 @@
-# Dependencies
 node_modules/
 deps/
-
-# Build
 dist/
 _build/
 *.beam
@@ -12,23 +9,19 @@ _build/
 /.fetch
 erl_crash.dump
 /config/*.secret.exs
-
-# IDE
 .elixir_ls/
 .vscode/
 .idea/
-
-# Environment
 .env
 .env.local
-
-# OS
 .DS_Store
 Thumbs.db
-
-# Uploads (dev)
 backend/priv/static/uploads/
-
-# Logs
 *.log
+/secret
+/secrets
 npm-debug.log*
+*.local.*
+/*ROADMAP*.md
+/*SCRATCH*.md
+/*TASK*.md
