@@ -70,6 +70,11 @@ description: Assess and auto-refactor if confident, then re-run tests (project)
    - **Skip**: add to TODO.md with lore file reference (e.g., `(lore/filename.md)`).
    - **Do not implement**: remove from task list.
 
-4. After implementing one item, ask about the next. Do NOT batch implementations.
+4. **Parallelize with Agent Teams.** After all items are triaged, spawn teammates to implement approved items in parallel:
+   - Group items by file ownership — each teammate owns distinct files (no overlapping edits).
+   - Use `TeamCreate`, then `Task` tool with `team_name` to spawn teammates (use Sonnet unless the work needs Opus).
+   - Each teammate gets: item description, files to edit, test command, and the instruction to NOT edit files outside their scope.
+   - Wait for all teammates to finish, review their work, send feedback if needed.
+   - If items are too tightly coupled to parallelize, implement sequentially instead.
 
 5. After all items resolved, run tests: `cd backend && mix test` + `cd frontend && npm test`
