@@ -1,6 +1,6 @@
 # Koikoi (コイコイ) - Japanese Matchmaking Dating App
 
-Friends-as-matchmakers dating app. Matchmakers rate pairs of their friends for compatibility; the system aggregates weighted ratings and creates matches when confidence thresholds are met. An AI matchmaker persona supplements during cold start.
+Chat-centered friends-as-matchmakers dating app. All social coordination flows through chat: DMs between friends, group chats, time-limited goukon groups, and shokai (紹介) introduction cards created by matchmakers. The matchmaking engine and AI persona supplement the core chat experience during cold start.
 
 ## Tech Stack
 
@@ -26,7 +26,8 @@ koikoi/
 │   │   ├── social/                  # Connections, trust tiers, invites
 │   │   ├── matching/                # Card dealer, scorer, aggregator
 │   │   ├── ai_matchmaker/           # AI persona, profile analyzer, cold start
-│   │   ├── chat/                    # Conversations, messages
+│   │   ├── chat/                    # DMs, groups, goukon, messages, system messages
+│   │   ├── shokai/                  # Matchmaker introductions (紹介), expiration worker
 │   │   ├── notifications/           # Real-time + persisted notifications
 │   │   ├── billing/                 # Stripe subscriptions, credits
 │   │   ├── repo.ex                  # MongoDB wrapper (delegates to Mongo driver)
@@ -50,7 +51,7 @@ koikoi/
 │   │   ├── i18n/                    # i18next config
 │   │   ├── types/                   # TypeScript interfaces
 │   │   └── data/                    # Static data (prefectures)
-│   └── public/locales/{ja,en}/      # Translation JSON files (7 namespaces)
+│   └── public/locales/{ja,en}/      # Translation JSON files (8 namespaces)
 ├── lore/                            # Architecture decision records
 └── CLAUDE.md
 ```
@@ -132,10 +133,11 @@ cd frontend && npm test         # Vitest
 **Context modules** (`lib/koikoi/`) encapsulate business logic:
 - `Accounts` — registration, login, JWT (access 15min + refresh 30d with rotation), phone verification (mocked SMS)
 - `Profiles` — CRUD, photo upload (local filesystem), tags, privacy filtering by trust tier, completeness scoring
-- `Social` — friend connections (bidirectional), matchmaker relationships (directed), trust tiers (inner_circle/friends/verified/open), invite codes
+- `Social` — friend connections (bidirectional), matchmaker relationships (directed), trust tiers (inner_circle/friends/verified/open), invite codes, `are_friends?/2` helper
 - `Matching` — CardDealer (pair selection), CompatibilityScorer (weighted aggregation), MatchAggregator (threshold-based match creation)
 - `AiMatchmaker` — rule-based ProfileAnalyzer, AI persona (恋のキューピッド), ColdStartWorker (GenServer)
-- `Chat` — conversations, messages, subscription checks (women free, men need paid plan)
+- `Chat` — conversations (DM/group/goukon/shokai types), messages (text/image/stamp/system/shokai_card), group member management, system messages, subscription checks (women free, men need paid plan)
+- `Shokai` — matchmaker introduction cards (紹介), create/respond/list/suggestions, ExpirationWorker (GenServer, 5-min interval, expires 72h+ cards)
 - `Notifications` — persisted notifications with PubSub broadcasting
 - `Billing` — Stripe subscriptions (basic ¥3,980/mo, VIP ¥6,980/mo), credit packages, webhook handling
 
@@ -146,20 +148,23 @@ cd frontend && npm test         # Vitest
 **Background jobs** — GenServer workers (no Oban, which requires PostgreSQL):
 - `MatchExpirationWorker` — checks every 5 min for expired pending introductions
 - `ColdStartWorker` — generates AI ratings every 10 min for cold-start users
+- `Shokai.ExpirationWorker` — checks every 5 min for expired shokai cards (72h+)
 
 **Controllers** return JSON only. All routes under `/api/v1/`. Router uses fixed paths before parameterized routes to avoid ambiguity.
 
 ### Frontend (React/TypeScript)
 
-**Pages** (17 total across 8 domains): auth (Login, Register, VerifyPhone), profile (MyProfile, ProfileEdit, ProfileView), social (Friends, Matchmakers, Invite), matching (CardDealing, Matches, MatchDetail, MatchmakerDashboard, ColdStart), chat (Conversations, Chat), notifications, billing (Subscription, Credits, PaymentSuccess).
+**Pages** (16 total across 7 domains): auth (Login, Register, VerifyPhone), profile (MyProfile, ProfileEdit, ProfileView), contacts (Contacts — combined friends+matchmakers), social (Invite), chat (Conversations [home screen], Chat, CreateGroup, GroupSettings), shokai (ShokaiCreate, ShokaiDetail), notifications, billing (Subscription, Credits, PaymentSuccess).
+
+**Navigation** — 3-tab bottom nav: Chats (`/`), Contacts (`/contacts`), Profile (`/profile`). Conversations page is the home screen with FAB menu for new DM/group/shokai.
 
 **API client** (`src/api/client.ts`) — Axios instance with JWT interceptor: auto-attaches token, auto-refreshes on 401, sends Accept-Language header.
 
-**State** — Zustand stores: auth, profile, social, matching, chat, notifications, billing.
+**State** — Zustand stores: auth, profile, social, matching, chat, shokai, notifications, billing.
 
 **WebSocket** — `useSocket` hook manages Phoenix socket connection; `useChannel` hook subscribes to channels with event handlers. Channels: `chat:{conversation_id}`, `notifications:{user_id}`.
 
-**i18n** — i18next with 7 namespaces (common, auth, profile, social, matching, chat, billing) in `public/locales/{ja,en}/`. Japanese is the default language.
+**i18n** — i18next with 8 namespaces (common, auth, profile, social, matching, chat, billing, shokai) in `public/locales/{ja,en}/`. Japanese is the default language.
 
 **Styling** — TailwindCSS v4, mobile-first responsive design.
 
@@ -172,8 +177,9 @@ cd frontend && npm test         # Vitest
 | `connections` | Social graph (friend + matchmaker relationships, trust tiers) |
 | `matchmaking_sessions` | Individual matchmaker ratings of pairs |
 | `matches` | Aggregated matches that crossed threshold |
-| `conversations` | Chat conversations between matched pairs |
-| `messages` | Chat messages |
+| `conversations` | Chat conversations (types: dm, group, goukon, shokai) with participants, admin_ids, expires_at |
+| `messages` | Chat messages (types: text, image, stamp, system, shokai_card) |
+| `shokais` | Matchmaker introduction cards with person_a/b responses, expiry, result_conversation_id |
 | `notifications` | Persisted notifications with read state |
 | `tags_catalog` | Master tag list (~200 predefined Japanese tags) |
 | `phone_verifications` | Temporary SMS codes (TTL indexed) |
@@ -213,6 +219,30 @@ Each rating weighted by: `confidence_mult × tier_mult × recency_mult × ai_mul
 - **Cold start**: 2 human + 1 AI AND score ≥ 0.75 AND 2+ strong ratings
 - Both parties get 72 hours to accept/decline introduction
 - If both accept → conversation opens
+
+### Chat System (Chat-Centered Architecture)
+
+**Conversation types:**
+- `dm` — Direct message between two friends (requires friendship)
+- `group` — Group chat with admin management (admin=creator, can add/remove members)
+- `goukon` — Time-limited group chat with `expires_at` (e.g., 24-hour mixer event)
+- `shokai` — Conversation created when both parties accept a shokai introduction
+
+**Message types:**
+- `text`, `image`, `stamp` — user messages
+- `system` — automated messages (group created, member joined/left, shokai intro)
+- `shokai_card` — embedded introduction card in chat
+
+**Key functions in `Chat`:** `get_or_create_dm/2`, `create_group/3`, `create_goukon/4`, `add_members/3`, `remove_member/3`, `leave_group/2`, `update_group/3`, `list_members/2`, `insert_system_message/2`
+
+### Shokai (紹介) — Matchmaker Introductions
+
+1. Matchmaker selects two friends to introduce (`create_shokai/4`)
+2. Both parties are notified and have 72 hours to accept/decline
+3. If both accept → shokai conversation is created with intro system message
+4. If either declines or 72h expires → shokai is marked declined/expired
+
+**Key functions in `Shokai`:** `create_shokai/4`, `respond_to_shokai/3`, `list_pending/1`, `list_sent/1`, `get_suggestions/1` (reuses CardDealer scoring), `expire_stale/0`
 
 ### AI Matchmaker (恋のキューピッド)
 

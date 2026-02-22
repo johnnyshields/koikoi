@@ -1,0 +1,23 @@
+{
+  "title": "紹介",
+  "create": "紹介を作成",
+  "pending": "承認待ち",
+  "sent": "送信済み",
+  "accepted": "承認済み",
+  "declined": "辞退",
+  "expired": "期限切れ",
+  "select_person_a": "1人目を選択",
+  "select_person_b": "2人目を選択",
+  "add_note": "メモを追加",
+  "note_placeholder": "二人の共通点や紹介の理由を書いてください",
+  "shared_tags": "共通タグ",
+  "accept": "受け入れる",
+  "decline": "辞退する",
+  "matchmaker": "仲人",
+  "expires_at": "期限: {{date}}",
+  "both_accepted": "お互い承認しました！",
+  "intro_message": "紹介を通じて繋がりました",
+  "no_pending": "承認待ちの紹介はありません",
+  "create_success": "紹介を作成しました",
+  "respond_success": "回答しました"
+}

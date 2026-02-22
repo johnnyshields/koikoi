@@ -1,0 +1,23 @@
+{
+  "title": "Introductions",
+  "create": "Create Introduction",
+  "pending": "Pending",
+  "sent": "Sent",
+  "accepted": "Accepted",
+  "declined": "Declined",
+  "expired": "Expired",
+  "select_person_a": "Select first person",
+  "select_person_b": "Select second person",
+  "add_note": "Add a note",
+  "note_placeholder": "Write about what they have in common or why you're introducing them",
+  "shared_tags": "Shared tags",
+  "accept": "Accept",
+  "decline": "Decline",
+  "matchmaker": "Matchmaker",
+  "expires_at": "Expires: {{date}}",
+  "both_accepted": "Both accepted!",
+  "intro_message": "Connected through introduction",
+  "no_pending": "No pending introductions",
+  "create_success": "Introduction created",
+  "respond_success": "Response submitted"
+}

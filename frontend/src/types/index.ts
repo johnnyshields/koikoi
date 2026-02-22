@@ -149,11 +149,15 @@ export interface Message {
 
 export interface Conversation {
   id: string;
-  match_id: string;
+  type: 'dm' | 'group' | 'goukon' | 'shokai';
+  match_id: string | null;
+  name: string | null;
+  admin_ids: string[] | null;
   participants: string[];
   status: 'active' | 'archived';
   last_message_at: string | null;
   last_message?: ChatMessage | null;
+  expires_at: string | null;
   inserted_at: string;
   updated_at: string;
 }
@@ -161,11 +165,58 @@ export interface Conversation {
 export interface ChatMessage {
   id: string;
   conversation_id: string;
-  sender_id: string;
+  sender_id: string | null;
   content: string;
-  message_type: 'text' | 'image' | 'stamp';
+  message_type: 'text' | 'image' | 'stamp' | 'system' | 'shokai_card';
   read_at: string | null;
+  read_by: Record<string, string> | null;
+  shokai_card_id: string | null;
   inserted_at: string;
+}
+
+export interface MemberInfo {
+  user_id: string;
+  nickname: string | null;
+  primary_photo: ProfilePhoto | null;
+  is_admin: boolean;
+}
+
+export interface ShokaiCard {
+  id: string;
+  matchmaker_id: string;
+  person_a_id: string;
+  person_b_id: string;
+  person_a_response: 'pending' | 'accepted' | 'declined';
+  person_b_response: 'pending' | 'accepted' | 'declined';
+  matchmaker_note: string | null;
+  compatibility_hints: {
+    shared_tags: string[];
+    score: number | null;
+  };
+  status: 'pending' | 'accepted' | 'declined' | 'expired';
+  result_conversation_id: string | null;
+  expires_at: string;
+  person_a_profile?: ProfileSummary | null;
+  person_b_profile?: ProfileSummary | null;
+  matchmaker_profile?: ProfileSummary | null;
+  inserted_at: string;
+  updated_at: string;
+}
+
+export interface ShokaiSuggestion {
+  person_a: ProfileSummary;
+  person_b: ProfileSummary;
+  shared_tags: string[];
+  priority_score: number;
+}
+
+export interface ProfileSummary {
+  user_id: string;
+  nickname: string | null;
+  primary_photo: ProfilePhoto | null;
+  age: number | null;
+  prefecture: string | null;
+  tags: ProfileTag[] | null;
 }
 
 export interface Notification {

@@ -11,6 +11,7 @@ defmodule Koikoi.ChatTest do
     Repo.delete_many("conversations", %{})
     Repo.delete_many("messages", %{})
     Repo.delete_many("notifications", %{})
+    Repo.delete_many("connections", %{})
     Repo.delete_many("users", %{})
     :ok
   end
@@ -42,6 +43,22 @@ defmodule Koikoi.ChatTest do
     })
   end
 
+  defp create_friendship(user_a, user_b) do
+    now = DateTime.utc_now()
+
+    Repo.insert_one("connections", %{
+      requester_id: user_a["_id"],
+      recipient_id: user_b["_id"],
+      type: "friend",
+      trust_tier: "friends",
+      status: "accepted",
+      matchmaker_id: nil,
+      subject_id: nil,
+      inserted_at: now,
+      updated_at: now
+    })
+  end
+
   # --- Conversation Tests ---
 
   describe "create_conversation/3" do
@@ -55,6 +72,7 @@ defmodule Koikoi.ChatTest do
       assert conversation["status"] == "active"
       assert length(conversation["participants"]) == 2
       assert conversation["last_message_at"] == nil
+      assert conversation["type"] == "dm"
     end
   end
 
@@ -87,7 +105,106 @@ defmodule Koikoi.ChatTest do
 
     test "returns not_found for invalid id" do
       user_a = create_female_user("+81900000001")
-      assert {:error, :not_found} = Chat.get_conversation("507f1f77bcf86cd799439011", id(user_a))
+
+      assert {:error, :not_found} =
+               Chat.get_conversation("507f1f77bcf86cd799439011", id(user_a))
+    end
+  end
+
+  # --- DM Tests ---
+
+  describe "get_or_create_dm/2" do
+    test "creates a new DM between friends" do
+      user_a = create_female_user("+81900000010")
+      user_b = create_female_user("+81900000011")
+      create_friendship(user_a, user_b)
+
+      assert {:ok, conversation} = Chat.get_or_create_dm(id(user_a), id(user_b))
+      assert conversation["type"] == "dm"
+      assert length(conversation["participants"]) == 2
+    end
+
+    test "returns existing DM if one exists" do
+      user_a = create_female_user("+81900000010")
+      user_b = create_female_user("+81900000011")
+      create_friendship(user_a, user_b)
+
+      {:ok, conv1} = Chat.get_or_create_dm(id(user_a), id(user_b))
+      {:ok, conv2} = Chat.get_or_create_dm(id(user_b), id(user_a))
+
+      assert to_string(conv1["_id"]) == to_string(conv2["_id"])
+    end
+
+    test "returns error for non-friends" do
+      user_a = create_female_user("+81900000010")
+      user_b = create_female_user("+81900000011")
+
+      assert {:error, :not_friends} = Chat.get_or_create_dm(id(user_a), id(user_b))
+    end
+  end
+
+  # --- Group Chat Tests ---
+
+  describe "create_group/3" do
+    test "creates a group chat" do
+      user_a = create_female_user("+81900000020")
+      user_b = create_female_user("+81900000021")
+      user_c = create_female_user("+81900000022")
+      create_friendship(user_a, user_b)
+      create_friendship(user_a, user_c)
+
+      assert {:ok, conversation} =
+               Chat.create_group(id(user_a), "テストグループ", [id(user_b), id(user_c)])
+
+      assert conversation["type"] == "group"
+      assert conversation["name"] == "テストグループ"
+      assert length(conversation["participants"]) == 3
+      assert length(conversation["admin_ids"]) == 1
+    end
+
+    test "returns error with empty name" do
+      user_a = create_female_user("+81900000020")
+
+      assert {:error, :name_required} = Chat.create_group(id(user_a), "", [])
+    end
+
+    test "returns error if not friends with all members" do
+      user_a = create_female_user("+81900000020")
+      user_b = create_female_user("+81900000021")
+
+      assert {:error, :not_friends_with_all} =
+               Chat.create_group(id(user_a), "Test", [id(user_b)])
+    end
+  end
+
+  describe "create_goukon/4" do
+    test "creates a goukon with expiry" do
+      user_a = create_female_user("+81900000030")
+      user_b = create_female_user("+81900000031")
+      create_friendship(user_a, user_b)
+
+      assert {:ok, conversation} =
+               Chat.create_goukon(id(user_a), "合コン", [id(user_b)], 24)
+
+      assert conversation["type"] == "goukon"
+      assert conversation["expires_at"] != nil
+    end
+  end
+
+  describe "leave_group/2" do
+    test "member can leave a group" do
+      user_a = create_female_user("+81900000040")
+      user_b = create_female_user("+81900000041")
+      create_friendship(user_a, user_b)
+
+      {:ok, conversation} = Chat.create_group(id(user_a), "Test", [id(user_b)])
+      conv_id = to_string(conversation["_id"])
+
+      assert :ok = Chat.leave_group(conv_id, id(user_b))
+
+      {:ok, updated} = Chat.get_conversation(conv_id, id(user_a))
+      participant_strings = Enum.map(updated["participants"], &to_string/1)
+      refute id(user_b) in participant_strings
     end
   end
 

@@ -83,20 +83,174 @@ defmodule KoikoiWeb.ChatController do
     end
   end
 
+  # POST /api/v1/conversations/dm
+  def create_dm(conn, %{"friend_id" => friend_id}) do
+    user = Guardian.Plug.current_resource(conn)
+    user_id = to_string(user["_id"])
+
+    case Chat.get_or_create_dm(user_id, friend_id) do
+      {:ok, conversation} ->
+        conn
+        |> put_status(:created)
+        |> json(%{conversation: serialize_conversation(conversation)})
+
+      {:error, :not_friends} ->
+        conn
+        |> put_status(:forbidden)
+        |> json(%{error: "not_friends"})
+
+      {:error, reason} ->
+        conn
+        |> put_status(:unprocessable_entity)
+        |> json(%{error: to_string(reason)})
+    end
+  end
+
+  # POST /api/v1/conversations/group
+  def create_group(conn, %{"name" => name, "member_ids" => member_ids}) do
+    user = Guardian.Plug.current_resource(conn)
+    user_id = to_string(user["_id"])
+
+    case Chat.create_group(user_id, name, member_ids) do
+      {:ok, conversation} ->
+        conn
+        |> put_status(:created)
+        |> json(%{conversation: serialize_conversation(conversation)})
+
+      {:error, :name_required} ->
+        conn |> put_status(:bad_request) |> json(%{error: "name_required"})
+
+      {:error, :not_friends_with_all} ->
+        conn |> put_status(:bad_request) |> json(%{error: "not_friends_with_all"})
+
+      {:error, reason} ->
+        conn |> put_status(:unprocessable_entity) |> json(%{error: to_string(reason)})
+    end
+  end
+
+  # POST /api/v1/conversations/goukon
+  def create_goukon(conn, %{"name" => name, "member_ids" => member_ids} = params) do
+    user = Guardian.Plug.current_resource(conn)
+    user_id = to_string(user["_id"])
+    expires_in_hours = params["expires_in_hours"] || 24
+
+    case Chat.create_goukon(user_id, name, member_ids, expires_in_hours) do
+      {:ok, conversation} ->
+        conn
+        |> put_status(:created)
+        |> json(%{conversation: serialize_conversation(conversation)})
+
+      {:error, :name_required} ->
+        conn |> put_status(:bad_request) |> json(%{error: "name_required"})
+
+      {:error, :not_friends_with_all} ->
+        conn |> put_status(:bad_request) |> json(%{error: "not_friends_with_all"})
+
+      {:error, reason} ->
+        conn |> put_status(:unprocessable_entity) |> json(%{error: to_string(reason)})
+    end
+  end
+
+  # POST /api/v1/conversations/:id/members
+  def add_members(conn, %{"id" => id, "member_ids" => member_ids}) do
+    user = Guardian.Plug.current_resource(conn)
+    user_id = to_string(user["_id"])
+
+    case Chat.add_members(id, user_id, member_ids) do
+      {:ok, added} ->
+        json(conn, %{status: "ok", added: added})
+
+      {:error, :not_admin} ->
+        conn |> put_status(:forbidden) |> json(%{error: "not_admin"})
+
+      {:error, reason} ->
+        conn |> put_status(:unprocessable_entity) |> json(%{error: to_string(reason)})
+    end
+  end
+
+  # DELETE /api/v1/conversations/:id/members/:user_id
+  def remove_member(conn, %{"id" => id, "user_id" => member_id}) do
+    user = Guardian.Plug.current_resource(conn)
+    user_id = to_string(user["_id"])
+
+    case Chat.remove_member(id, user_id, member_id) do
+      :ok ->
+        json(conn, %{status: "ok"})
+
+      {:error, :not_admin} ->
+        conn |> put_status(:forbidden) |> json(%{error: "not_admin"})
+
+      {:error, reason} ->
+        conn |> put_status(:unprocessable_entity) |> json(%{error: to_string(reason)})
+    end
+  end
+
+  # POST /api/v1/conversations/:id/leave
+  def leave_group(conn, %{"id" => id}) do
+    user = Guardian.Plug.current_resource(conn)
+    user_id = to_string(user["_id"])
+
+    case Chat.leave_group(id, user_id) do
+      :ok ->
+        json(conn, %{status: "ok"})
+
+      {:error, reason} ->
+        conn |> put_status(:unprocessable_entity) |> json(%{error: to_string(reason)})
+    end
+  end
+
+  # PUT /api/v1/conversations/:id
+  def update_group(conn, %{"id" => id} = params) do
+    user = Guardian.Plug.current_resource(conn)
+    user_id = to_string(user["_id"])
+
+    case Chat.update_group(id, user_id, params) do
+      {:ok, conversation} ->
+        json(conn, %{conversation: serialize_conversation(conversation)})
+
+      {:error, :not_admin} ->
+        conn |> put_status(:forbidden) |> json(%{error: "not_admin"})
+
+      {:error, reason} ->
+        conn |> put_status(:unprocessable_entity) |> json(%{error: to_string(reason)})
+    end
+  end
+
+  # GET /api/v1/conversations/:id/members
+  def list_members(conn, %{"id" => id}) do
+    user = Guardian.Plug.current_resource(conn)
+    user_id = to_string(user["_id"])
+
+    case Chat.list_members(id, user_id) do
+      {:ok, members} ->
+        json(conn, %{members: Enum.map(members, &serialize_member/1)})
+
+      {:error, reason} ->
+        conn |> put_status(:unprocessable_entity) |> json(%{error: to_string(reason)})
+    end
+  end
+
   # --- Private Helpers ---
 
   defp serialize_conversation(conv) do
     %{
       id: to_string(conv["_id"]),
+      type: conv["type"] || "dm",
       match_id: maybe_to_string(conv["match_id"]),
+      name: conv["name"],
+      admin_ids: serialize_admin_ids(conv["admin_ids"]),
       participants: Enum.map(conv["participants"] || [], &to_string/1),
       status: conv["status"],
       last_message_at: conv["last_message_at"],
       last_message: serialize_last_message(conv["last_message"]),
+      expires_at: conv["expires_at"],
       inserted_at: conv["inserted_at"],
       updated_at: conv["updated_at"]
     }
   end
+
+  defp serialize_admin_ids(nil), do: nil
+  defp serialize_admin_ids(ids), do: Enum.map(ids, &to_string/1)
 
   defp serialize_last_message(nil), do: nil
 
@@ -108,11 +262,20 @@ defmodule KoikoiWeb.ChatController do
     %{
       id: to_string(msg["_id"]),
       conversation_id: to_string(msg["conversation_id"]),
-      sender_id: to_string(msg["sender_id"]),
+      sender_id: maybe_to_string(msg["sender_id"]),
       content: msg["content"],
-      message_type: msg["message_type"],
+      message_type: msg["message_type"] || "text",
       read_at: msg["read_at"],
       inserted_at: msg["inserted_at"]
+    }
+  end
+
+  defp serialize_member(member) do
+    %{
+      user_id: member.user_id,
+      nickname: member.nickname,
+      primary_photo: member.primary_photo,
+      is_admin: member.is_admin
     }
   end
 

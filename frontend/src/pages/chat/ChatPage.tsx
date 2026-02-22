@@ -5,6 +5,8 @@ import { useChatStore } from '../../store/chat';
 import { useAuth } from '../../hooks/useAuth';
 import { useChannel } from '../../hooks/useChannel';
 import { Avatar } from '../../components/ui/Avatar';
+import { GroupAvatar } from '../../components/chat/GroupAvatar';
+import { ShokaiCardBubble } from '../../components/chat/ShokaiCardBubble';
 import { LoadingSpinner } from '../../components/ui/LoadingSpinner';
 import type { ChatMessage } from '../../types';
 
@@ -65,19 +67,28 @@ export function ChatPage() {
   } = useChatStore();
 
   const [inputText, setInputText] = useState('');
-  const [isTyping, setIsTyping] = useState(false);
+  const [typingUsers, setTypingUsers] = useState<string[]>([]);
   const [hasMore, setHasMore] = useState(true);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const messagesContainerRef = useRef<HTMLDivElement>(null);
-  const typingTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const typingTimeoutRef = useRef<Record<string, ReturnType<typeof setTimeout>>>({});
 
   const conversationMessages = conversationId
     ? messages[conversationId] || []
     : [];
 
-  const otherUserId = currentConversation?.participants.find(
-    (id) => id !== user?.id,
-  );
+  const isGroup =
+    currentConversation?.type === 'group' || currentConversation?.type === 'goukon';
+
+  const otherUserId = !isGroup
+    ? currentConversation?.participants.find((id) => id !== user?.id)
+    : undefined;
+
+  const displayName = isGroup
+    ? currentConversation?.name || '...'
+    : otherUserId?.slice(-6) || '...';
+
+  const memberCount = currentConversation?.participants.length || 0;
 
   const isFreeMan =
     user?.gender === 'male' && user?.subscription?.plan === 'free';
@@ -97,9 +108,17 @@ export function ChatPage() {
     (payload: unknown) => {
       const data = payload as { user_id: string };
       if (data.user_id !== user?.id) {
-        setIsTyping(true);
-        if (typingTimeoutRef.current) clearTimeout(typingTimeoutRef.current);
-        typingTimeoutRef.current = setTimeout(() => setIsTyping(false), 3000);
+        setTypingUsers((prev) => {
+          if (!prev.includes(data.user_id)) return [...prev, data.user_id];
+          return prev;
+        });
+        // Clear typing after 3s
+        if (typingTimeoutRef.current[data.user_id]) {
+          clearTimeout(typingTimeoutRef.current[data.user_id]);
+        }
+        typingTimeoutRef.current[data.user_id] = setTimeout(() => {
+          setTypingUsers((prev) => prev.filter((id) => id !== data.user_id));
+        }, 3000);
       }
     },
     [user?.id],
@@ -185,7 +204,7 @@ export function ChatPage() {
       <div className="flex items-center gap-3 border-b border-gray-200 bg-white px-4 py-3">
         <button
           type="button"
-          onClick={() => navigate('/conversations')}
+          onClick={() => navigate('/')}
           className="rounded-full p-1 text-gray-500 hover:bg-gray-100"
         >
           <svg
@@ -203,15 +222,43 @@ export function ChatPage() {
             />
           </svg>
         </button>
-        <Avatar name={otherUserId || '?'} size="md" />
-        <div className="min-w-0 flex-1">
-          <p className="truncate font-medium text-gray-900">
-            {otherUserId?.slice(-6) || '...'}
-          </p>
-          {isTyping && (
+        {isGroup ? (
+          <GroupAvatar members={currentConversation?.participants} size="md" />
+        ) : (
+          <Avatar name={otherUserId || '?'} size="md" />
+        )}
+        <button
+          type="button"
+          className="min-w-0 flex-1 text-left"
+          onClick={() => {
+            if (isGroup && conversationId) {
+              navigate(`/conversations/${conversationId}/settings`);
+            }
+          }}
+          disabled={!isGroup}
+        >
+          <p className="truncate font-medium text-gray-900">{displayName}</p>
+          {isGroup && (
+            <p className="text-xs text-gray-500">
+              {t('member_count', { count: memberCount })}
+            </p>
+          )}
+          {typingUsers.length > 0 && (
             <p className="text-xs text-rose-500">{t('typing')}</p>
           )}
-        </div>
+        </button>
+        {isGroup && (
+          <button
+            type="button"
+            onClick={() => navigate(`/conversations/${conversationId}/settings`)}
+            className="rounded-full p-1.5 text-gray-500 hover:bg-gray-100"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.066 2.573c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.573 1.066c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.066-2.573c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+              <path strokeLinecap="round" strokeLinejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+            </svg>
+          </button>
+        )}
       </div>
 
       {/* Messages */}
@@ -242,31 +289,59 @@ export function ChatPage() {
                   </span>
                 </div>
                 {group.messages.map((msg) => {
+                  // System messages
+                  if (msg.message_type === 'system') {
+                    return (
+                      <div key={msg.id} className="my-2 text-center">
+                        <span className="inline-block rounded-full bg-gray-100 px-3 py-1 text-xs text-gray-500">
+                          {msg.content}
+                        </span>
+                      </div>
+                    );
+                  }
+
+                  // Shokai card messages
+                  if (msg.message_type === 'shokai_card') {
+                    return <ShokaiCardBubble key={msg.id} message={msg} />;
+                  }
+
                   const isMine = msg.sender_id === user?.id;
                   return (
                     <div
                       key={msg.id}
                       className={`mb-2 flex ${isMine ? 'justify-end' : 'justify-start'}`}
                     >
-                      <div
-                        className={`max-w-[75%] rounded-2xl px-4 py-2.5 ${
-                          isMine
-                            ? 'rounded-br-md bg-rose-500 text-white'
-                            : 'rounded-bl-md bg-white text-gray-900 shadow-sm'
-                        }`}
-                      >
-                        <p className="whitespace-pre-wrap break-words text-sm">
-                          {msg.content}
-                        </p>
+                      {!isMine && isGroup && (
+                        <div className="mr-2 shrink-0 self-end">
+                          <Avatar name={msg.sender_id || '?'} size="sm" />
+                        </div>
+                      )}
+                      <div className="max-w-[75%]">
+                        {!isMine && isGroup && msg.sender_id && (
+                          <p className="mb-0.5 text-[10px] text-gray-500 ml-1">
+                            {msg.sender_id.slice(-6)}
+                          </p>
+                        )}
                         <div
-                          className={`mt-1 flex items-center gap-1 text-xs ${
-                            isMine ? 'justify-end text-rose-200' : 'text-gray-400'
+                          className={`rounded-2xl px-4 py-2.5 ${
+                            isMine
+                              ? 'rounded-br-md bg-rose-500 text-white'
+                              : 'rounded-bl-md bg-white text-gray-900 shadow-sm'
                           }`}
                         >
-                          <span>{formatMessageTime(msg.inserted_at)}</span>
-                          {isMine && msg.read_at && (
-                            <span>{t('read')}</span>
-                          )}
+                          <p className="whitespace-pre-wrap break-words text-sm">
+                            {msg.content}
+                          </p>
+                          <div
+                            className={`mt-1 flex items-center gap-1 text-xs ${
+                              isMine ? 'justify-end text-rose-200' : 'text-gray-400'
+                            }`}
+                          >
+                            <span>{formatMessageTime(msg.inserted_at)}</span>
+                            {isMine && msg.read_at && (
+                              <span>{t('read')}</span>
+                            )}
+                          </div>
                         </div>
                       </div>
                     </div>
